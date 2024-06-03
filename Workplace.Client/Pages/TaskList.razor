@@ -1,0 +1,38 @@
+﻿@page "/"
+@inject IDataService data
+
+<PageTitle>Список задач</PageTitle>
+
+<h3>Спиок задач</h3>
+
+@if (tasks == null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <div>
+        <button type="button" @onclick="AddTaskItemAsync">Новая задача</button>
+    </div>
+    @foreach (var task in tasks)
+    {
+        <div class="card" style="width: 18rem;">
+            <TaskCard TaskItem="task" />
+        </div>
+    }
+}
+
+@code {
+    IEnumerable<TaskItemDTO>? tasks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await data.GetDataAsync();
+    }
+
+    async Task AddTaskItemAsync()
+    {
+        TaskItemDTO newTask = new() { Id = 4, Name = "Задача 4", Description = "Описание 4" };
+        await data.AddAsync(newTask);
+    }
+}

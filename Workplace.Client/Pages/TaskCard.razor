@@ -1,0 +1,20 @@
+﻿@inject NavigationManager navigate
+
+<div class="card-body">
+    <h5 class="card-title">@TaskItem!.Name</h5>
+    <h6 class="card-subtitle mb-2 text-body-secondary">@TaskItem!.Description</h6>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <a href="#" class="card-link">Card link</a>
+    <a href="#" class="card-link">Another link</a>
+    <button type="button" @onclick="() => NavigateToWether(TaskItem.Id)">Погода</button>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public TaskItemDTO? TaskItem { get; set; }
+
+    void NavigateToWether(int id)
+    {
+        navigate.NavigateTo($"/tasklist/{id}");
+    }
+}

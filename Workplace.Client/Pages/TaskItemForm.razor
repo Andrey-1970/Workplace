@@ -1,0 +1,12 @@
+﻿@page "/tasklist/{Id:int}"
+
+<h3>Форма редактирования @Id</h3>
+
+<EditForm>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+}
