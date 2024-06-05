@@ -14,18 +14,20 @@ else
     <div>
         <button type="button" @onclick="AddTaskItemAsync">Новая задача</button>
     </div>
-    @foreach (var task in tasks)
-    {
-        <div class="card" style="width: 18rem;">
-            <TaskCard TaskItem="task" />
-        </div>
-    }
+    <div class="card-group">
+        @foreach (var task in tasks)
+        {
+            <div class="card" style="width: 18rem;">
+                <TaskCard TaskItem="task" OnDelete="OnDelete" />
+            </div>
+        }
+    </div>
 }
 
 @code {
     IEnumerable<TaskItemDTO>? tasks;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         tasks = await data.GetDataAsync();
     }
@@ -34,5 +36,10 @@ else
     {
         TaskItemDTO newTask = new() { Id = 4, Name = "Задача 4", Description = "Описание 4" };
         await data.AddAsync(newTask);
+    }
+
+    async Task OnDelete(int id)
+    {
+        await data.RemoveAsync(id);
     }
 }

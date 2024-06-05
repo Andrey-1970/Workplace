@@ -1,0 +1,33 @@
+﻿@page "/tasklist/{Id:int}"
+@inject IDataService data
+@inject NavigationManager navigate
+
+<h3>Форма редактирования @Id</h3>
+
+<EditForm Model="TaskItem" OnValidSubmit="Submit">
+    <ValidationSummary />
+    <InputText @bind-Value="TaskItem!.Name" />
+    <ValidationMessage For="@(() => TaskItem!.Name)" />
+    <button type="submit">Ok</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    TaskItemDTO TaskItem { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        TaskItemDTO task = await data.GetTaskAsync(Id);
+        TaskItem!.Id = task.Id;
+        TaskItem!.Name = task.Name;
+        TaskItem!.Description = task.Description;
+    }
+
+    async Task Submit()
+    {
+        await data.SaveAsync(TaskItem!);
+        navigate.NavigateTo("/");
+    }
+}
