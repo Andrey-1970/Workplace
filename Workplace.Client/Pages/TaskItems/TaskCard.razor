@@ -1,11 +1,13 @@
-﻿@inject NavigationManager navigate
-
-<div class="card-body">
+﻿<div class="card-body">
     <h5 class="card-title">@TaskItem!.Name</h5>
     <h6 class="card-subtitle mb-2 text-body-secondary">@TaskItem!.Description</h6>
     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <button type="button" @onclick="() => EditTaskItem(TaskItem.Id)">Изменить</button>
-    <button type="button" @onclick="async () => await OnDelete.InvokeAsync(TaskItem.Id)">Удалить</button>
+    <button type="button" class="btn btn-primary" @onclick="() => OnUpdateHandler(TaskItem.Id)">
+        Изменить
+    </button>
+    <a type="button" class="btn btn-danger" @onclick="async () => await OnDeleteHandler(TaskItem.Id)">
+        Удалить
+    </a>
 </div>
 
 @code {
@@ -13,10 +15,18 @@
     public TaskItemDTO? TaskItem { get; set; }
 
     [Parameter, EditorRequired]
+    public EventCallback<int> OnUpdate { get; set; }
+
+    [Parameter, EditorRequired]
     public EventCallback<int> OnDelete { get; set; }
 
-    void EditTaskItem(int id)
+    async Task OnUpdateHandler(int id)
     {
-        navigate.NavigateTo($"/tasklist/{id}");
+        await OnUpdate.InvokeAsync(id);
+    }
+
+    async Task OnDeleteHandler(int id)
+    {
+        await OnDelete.InvokeAsync(id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IDataService data
+@inject NavigationManager navigate
 
 <PageTitle>Список задач</PageTitle>
 
@@ -12,13 +13,16 @@
 else
 {
     <div>
-        <button type="button" @onclick="AddTaskItemAsync">Новая задача</button>
+        <button type="button" class="btn btn-secondary" @onclick="OnAddHandler">Новая задача</button>
     </div>
-    <div class="card-group">
+    <div class="row">
         @foreach (var task in tasks)
         {
-            <div class="card" style="width: 18rem;">
-                <TaskCard TaskItem="task" OnDelete="OnDelete" />
+            <div class="card col-xxl-3 col-xl-4 col-md-12 col-sm-12">
+                <TaskCard TaskItem="task" 
+                    OnUpdate="async () => await OnUpdateHandler(task.Id)" 
+                    OnDelete="async () => await OnDeleteHandler(task.Id)" 
+                />
             </div>
         }
     </div>
@@ -29,17 +33,21 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        tasks = await data.GetDataAsync();
+        tasks = await data.GetAllAsync();
     }
 
-    async Task AddTaskItemAsync()
+    async Task OnAddHandler()
     {
-        TaskItemDTO newTask = new() { Id = 4, Name = "Задача 4", Description = "Описание 4" };
-        await data.AddAsync(newTask);
+        await Task.Run(() => navigate.NavigateTo($"/tasklist"));
     }
 
-    async Task OnDelete(int id)
+    async Task OnUpdateHandler(int id)
     {
-        await data.RemoveAsync(id);
+        await Task.Run(() => navigate.NavigateTo($"/tasklist/{id}"));
+    }
+
+    async Task OnDeleteHandler(int id)
+    {
+        await data.DeleteAsync(id);
     }
 }

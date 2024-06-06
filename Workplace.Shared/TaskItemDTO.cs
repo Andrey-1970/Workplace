@@ -10,8 +10,11 @@ namespace Workplace.Shared
     public class TaskItemDTO
     {
         public int Id { get; set; }
-        [Required(AllowEmptyStrings = false)]
+        [Required(ErrorMessage = "Требуется указать название")]
+        [Display(Name="Наименование")]
         public string? Name { get; set; }
+        [Required(ErrorMessage = "Требуется дать описание")]
+        [Display(Name = "Описание")]
         public string? Description { get; set; }
     }
 }
