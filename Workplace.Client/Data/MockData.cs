@@ -15,10 +15,14 @@ namespace Workplace.Client.Data
         {
             await Task.Run(() =>
             {
-                if(taskItem.Id != 0)
+                if (taskItem.Id != 0)
                 {
                     var task = tasks.First(x => x.Id == taskItem.Id);
                     tasks.Remove(task);
+                }
+                else
+                {
+                    taskItem.Id = tasks.Max(t => t.Id) + 1;
                 }
                 tasks.Add(taskItem);
             });
