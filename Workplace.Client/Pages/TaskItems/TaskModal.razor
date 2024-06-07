@@ -1,0 +1,59 @@
+﻿<Modal @ref="Modal">
+    <Title>Форма редактирования задачи</Title>
+    <Body>
+        <EditForm Model="TaskItem" OnValidSubmit="Submit">
+            <DataAnnotationsValidator />
+
+            <div class="form-group">
+                <label for="name">@DisplayName(() => TaskItem!.Name)</label>
+                <InputText @bind-Value="TaskItem!.Name" class="form-control" id="name" />
+                <ValidationMessage For="@(() => TaskItem!.Name)" />
+            </div>
+
+            <div class="form-group">
+                <label for="desc">@DisplayName(() => TaskItem!.Description)</label>
+                <InputText @bind-Value="TaskItem!.Description" class="form-control" id="desc" />
+                <ValidationMessage For="@(() => TaskItem!.Description)" />
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit">Сохранить</button>
+                <button type="button" @onclick="async () => await Cancel()">Закрыть</button>
+            </div>
+        </EditForm>
+    </Body>
+</Modal>
+
+@code {
+    Modal? Modal { get; set; }
+    TaskItemDTO? TaskItem { get; set; } = new();
+
+    [Parameter, EditorRequired]
+    public EventCallback<TaskItemDTO> OnSubmit { get; set; }
+
+    public void Open(TaskItemDTO taskItem)
+    {
+        TaskItem = Clone(taskItem);
+        Modal!.Open();
+    }
+
+    async Task Submit()
+    {
+        await OnSubmit.InvokeAsync(TaskItem!);
+        await Task.Run(() => Modal!.Close());
+    }
+
+    async Task Cancel()
+    {
+        await Task.Run(() => Modal!.Close());
+    }
+
+    TaskItemDTO Clone(TaskItemDTO taskItem)
+    {
+        TaskItemDTO taskCopy = new();
+        taskCopy!.Id = taskItem.Id;
+        taskCopy!.Name = taskItem.Name;
+        taskCopy!.Description = taskItem.Description;
+        return taskCopy;
+    }
+}
